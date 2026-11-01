@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>METAN0L4IK</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --surface:      #141118;
+    --surface-2:    #1A1626;
+    --primary:      #D0BCFF;
+    --on-primary:   #381E72;
+    --primary-cont: #4F378B;
+    --on-primary-c: #EADDFF;
+    --text:         #E6E1E5;
+    --text-dim:     #A29CB0;
+    --glass-line:   rgba(208,188,255,0.10);
+    --glass-line-2: rgba(255,255,255,0.06);
+  }
+
+  html,body{min-height:100%}
+
+  body{
+    font-family: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    background:#0B0910;
+    color:var(--text);
+    display:grid;
+    place-items:center;
+    padding:28px 16px;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* мягкие матовые пятна фона — «подложка» для стекла */
+  body::before{
+    content:"";
+    position:fixed; inset:-20%;
+    background:
+      radial-gradient(circle at 22% 18%, rgba(79,55,139,.45), transparent 55%),
+      radial-gradient(circle at 82% 78%, rgba(94,74,158,.35), transparent 55%),
+      radial-gradient(circle at 50% 50%, rgba(56,30,114,.20), transparent 65%);
+    filter:blur(80px);
+    z-index:-1;
+    pointer-events:none;
+  }
+
+  /* ---------- Стеклянная карточка ---------- */
+  .card{
+    position:relative;
+    width:100%;
+    max-width:840px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    border-radius:32px;
+
+    background: linear-gradient(135deg,
+      rgba(32, 27, 46, 0.62),
+      rgba(20, 17, 28, 0.74));
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+
+    border: 1px solid var(--glass-line);
+    box-shadow:
+      inset 0 1px 0 var(--glass-line-2),
+      inset 0 -1px 0 rgba(0,0,0,.35),
+      0 40px 80px -40px rgba(0,0,0,.9),
+      0 4px 24px -8px rgba(0,0,0,.5);
+  }
+  /* мягкая верхняя «бликовая» кромка */
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0; left:12%; right:12%;
+    height:1px;
+    background:linear-gradient(90deg,
+      transparent,
+      rgba(208,188,255,.45),
+      transparent);
+    border-radius:inherit;
+    pointer-events:none;
+  }
+
+  /* ---------- Шапка ---------- */
+  .head{display:flex;align-items:center;gap:14px}
+
+  .avatar{
+    width:54px;height:54px;flex:0 0 auto;
+    border-radius:18px;
+    display:grid;place-items:center;
+    font-size:22px;font-weight:600;
+    letter-spacing:.5px;
+    color:var(--on-primary-c);
+    background: linear-gradient(135deg,
+      rgba(208,188,255,.30),
+      rgba(79,55,139,.55));
+    border:1px solid rgba(234,221,255,.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.20),
+      inset 0 -1px 0 rgba(0,0,0,.25),
+      0 6px 20px -8px rgba(79,55,139,.8);
+  }
+
+  h1{font-size:20px;font-weight:600;letter-spacing:.3px}
+  .sub{font-size:13px;color:var(--text-dim);margin-top:3px}
+
+  /* ---------- Кнопки-платформы ---------- */
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .btn{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:13px 16px;
+    border-radius:22px;
+    text-decoration:none;
+    color:var(--text);
+    overflow:hidden;
+
+    background: linear-gradient(135deg,
+      rgba(208,188,255,.09),
+      rgba(79,55,139,.05));
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+
+    border:1px solid var(--glass-line);
+    box-shadow:
+      inset 0 1px 0 var(--glass-line-2),
+      inset 0 -1px 0 rgba(0,0,0,.30),
+      0 8px 24px -14px rgba(0,0,0,.6);
+
+    transition:transform .18s ease, border-color .25s ease, background .25s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn::before{
+    content:"";
+    position:absolute;
+    top:0; left:15%; right:15%;
+    height:1px;
+    background:linear-gradient(90deg,
+      transparent,
+      rgba(255,255,255,.38),
+      transparent);
+    pointer-events:none;
+  }
+  .btn:hover{
+    transform:translateY(-1px);
+    border-color:rgba(208,188,255,.22);
+    background: linear-gradient(135deg,
+      rgba(208,188,255,.14),
+      rgba(79,55,139,.10));
+  }
+  .btn:active{transform:translateY(0)}
+
+  .btn-icon{
+    flex:0 0 auto;
+    width:42px;height:42px;
+    border-radius:14px;
+    display:grid;place-items:center;
+    border:1px solid rgba(208,188,255,.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+  }
+  .btn.tg .btn-icon{
+    color:#B39DF0;
+    background: linear-gradient(135deg,
+      rgba(120, 90, 210, .28),
+      rgba(79, 55, 139, .18));
+  }
+  .btn.tt .btn-icon{
+    color:#E8BCF0;
+    background: linear-gradient(135deg,
+      rgba(160, 80, 180, .26),
+      rgba(94, 55, 139, .18));
+  }
+
+  .btn-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .btn-label{font-size:14px;font-weight:600;letter-spacing:.2px}
+  .btn-handle{
+    font-size:12px;color:var(--text-dim);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+
+  /* ---------- Игровое поле ---------- */
+  .game-wrap{
+    position:relative;
+    border-radius:24px;
+    overflow:hidden;
+    border:1px solid var(--glass-line);
+    box-shadow:
+      inset 0 0 0 1px rgba(0,0,0,.45),
+      inset 0 1px 0 rgba(255,255,255,.05),
+      0 16px 34px -20px rgba(0,0,0,.7);
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  canvas{display:block;width:100%;height:auto}
+
+  .hud{
+    position:absolute;
+    top:14px; left:18px; right:18px;
+    display:flex;align-items:baseline;justify-content:space-between;
+    pointer-events:none;
+    font-variant-numeric:tabular-nums;
+  }
+  .best{
+    font-size:11px;letter-spacing:1.2px;font-weight:600;
+    color:var(--text-dim);text-transform:uppercase;
+  }
+  .best b{color:var(--primary);font-size:13px;margin-left:4px}
+  .score{
+    font-size:20px;font-weight:700;
+    color:var(--primary);
+    text-shadow:0 0 18px rgba(208,188,255,.35);
+  }
+
+  /* ---------- Оверлей ---------- */
+  .overlay{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:6px;
+    cursor:pointer;
+    background:rgba(20,17,26,.55);
+    backdrop-filter:blur(10px) saturate(160%);
+    -webkit-backdrop-filter:blur(10px) saturate(160%);
+    transition:opacity .25s ease;
+  }
+  .overlay.hidden{opacity:0;pointer-events:none}
+
+  .ov-title{font-size:19px;font-weight:600}
+  .ov-sub{font-size:13px;color:var(--text-dim);margin-bottom:10px}
+  .ov-btn{
+    display:inline-block;
+    padding:10px 26px;
+    border-radius:20px;
+    font-size:14px;font-weight:600;
+    color:var(--on-primary-c);
+    background:linear-gradient(135deg,
+      rgba(208,188,255,.30),
+      rgba(79,55,139,.70));
+    border:1px solid rgba(234,221,255,.20);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.18),
+      0 6px 20px -8px rgba(79,55,139,.8);
+  }
+
+  /* ---------- Адаптив ---------- */
+  @media (max-width:560px){
+    .card{padding:18px;border-radius:26px;gap:14px}
+    h1{font-size:18px}
+    .avatar{width:48px;height:48px;border-radius:16px;font-size:19px}
+    .actions{grid-template-columns:1fr}
+    .btn{padding:12px 14px;border-radius:20px}
+    .btn-icon{width:38px;height:38px;border-radius:12px}
+    .score{font-size:17px}
+  }
+</style>
+</head>
+<body>
+
+<main class="card">
+
+  <header class="head">
+    <div class="avatar">M</div>
+    <div>
+      <h1>METAN0L4IK</h1>
+      <p class="sub">Свяжись или сыграй</p>
+    </div>
+  </header>
+
+  <div class="actions">
+
+    <a class="btn tg" href="https://t.me/METAN0L4IK" target="_blank" rel="noopener noreferrer">
+      <span class="btn-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+        </svg>
+      </span>
+      <span class="btn-text">
+        <span class="btn-label">Telegram</span>
+        <span class="btn-handle">@METAN0L4IK</span>
+      </span>
+    </a>
+
+    <a class="btn tt" href="https://www.tiktok.com/@_metan0l_" target="_blank" rel="noopener noreferrer">
+      <span class="btn-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+        </svg>
+      </span>
+      <span class="btn-text">
+        <span class="btn-label">TikTok</span>
+        <span class="btn-handle">@_metan0l_</span>
+      </span>
+    </a>
+
+  </div>
+
+  <section class="game-wrap" id="gameWrap">
+    <canvas id="game"></canvas>
+
+    <div class="hud">
+      <span class="best">Рекорд <b id="best">0</b></span>
+      <span class="score" id="score">0</span>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="ov-title" id="ovTitle">Готов?</div>
+      <div class="ov-sub"  id="ovSub">Пробел или тап — прыжок</div>
+      <span class="ov-btn" id="ovBtn">Играть</span>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ======================= КОНСТАНТЫ ======================= */
+  const W = 860, H = 300;
+  const GROUND_Y = H - 56;
+  const GRAVITY  = 3600;
+  const JUMP     = 980;
+
+  /* ======================= DOM ======================= */
+  const canvas   = document.getElementById('game');
+  const ctx      = canvas.getContext('2d');
+  const overlay  = document.getElementById('overlay');
+  const ovTitle  = document.getElementById('ovTitle');
+  const ovSub    = document.getElementById('ovSub');
+  const ovBtn    = document.getElementById('ovBtn');
+  const scoreEl  = document.getElementById('score');
+  const bestEl   = document.getElementById('best');
+
+  /* ======================= CANVAS / DPR ======================= */
+  function setupCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  setupCanvas();
+  window.addEventListener('resize', setupCanvas);
+
+  /* ======================= ХЕЛПЕР: скруглённый прямоугольник ======================= */
+  function rr(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y,     x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x,     y + h, r);
+    ctx.arcTo(x,     y + h, x,     y,     r);
+    ctx.arcTo(x,     y,     x + w, y,     r);
+    ctx.closePath();
+  }
+
+  /* ======================= ФОН КАНВАСА (матовый градиент) ======================= */
+  function paintCanvasBg() {
+    const g = ctx.createLinearGradient(0, 0, W * 0.4, H);
+    g.addColorStop(0, '#1B1626');
+    g.addColorStop(1, '#131019');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  /* ======================= СОСТОЯНИЕ ======================= */
+  const player = { x: 88, w: 46, h: 52, y: 0, vy: 0, onGround: true };
+
+  let state    = 'ready';        // ready | playing | over
+  let obstacles = [];
+  let stars     = [];
+  let distance  = 0;
+  let speed     = 340;
+  let score     = 0;
+  let spawnIn   = 520;
+  let lastT     = 0;
+  let overLock  = 0;
+
+  let best = 0;
+  try { best = parseInt(localStorage.getItem('metan_best') || '0', 10) || 0; } catch (e) { best = 0; }
+
+  let shownScore = -1;
+  let shownBest  = -1;
+
+  /* ======================= ЗВЁЗДЫ ======================= */
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 30; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * (GROUND_Y - 40),
+        r: 0.8 + Math.random() * 1.4,
+        a: Math.random() * 0.30,
+        f: 0.03 + Math.random() * 0.09
+      });
+    }
+  }
+  initStars();
+
+  /* ======================= UI ======================= */
+  function updateScoreUI() {
+    if (score !== shownScore) { scoreEl.textContent = score; shownScore = score; }
+    if (best  !== shownBest)  { bestEl.textContent  = best;  shownBest  = best;  }
+  }
+  updateScoreUI();
+
+  function showOverlay(kind) {
+    overlay.classList.remove('hidden');
+    if (kind === 'ready') {
+      ovTitle.textContent = 'Готов?';
+      ovSub.textContent   = 'Пробел или тап — прыжок';
+      ovBtn.textContent   = 'Играть';
+    } else {
+      ovTitle.textContent = 'Игра окончена';
+      ovSub.textContent   = 'Счёт: ' + score;
+      ovBtn.textContent   = 'Заново';
+    }
+  }
+
+  /* ======================= ЛОГИКА ======================= */
+  function resetGame() {
+    obstacles = [];
+    distance  = 0;
+    score     = 0;
+    speed     = 340;
+    spawnIn   = 520;
+    player.y  = GROUND_Y - player.h;
+    player.vy = 0;
+    player.onGround = true;
+    shownScore = -1;
+    updateScoreUI();
+  }
+
+  function startGame() {
+    resetGame();
+    state = 'playing';
+    overlay.classList.add('hidden');
+  }
+
+  function gameOver() {
+    state = 'over';
+    overLock = 0.45;
+    if (score > best) {
+      best = score;
+      try { localStorage.setItem('metan_best', String(best)); } catch (e) {}
+    }
+    updateScoreUI();
+    showOverlay('over');
+  }
+
+  function jump() {
+    player.vy = -JUMP;
+    player.onGround = false;
+  }
+
+  function input() {
+    if (state === 'ready') { startGame(); return; }
+    if (state === 'over')  { if (overLock <= 0) startGame(); return; }
+    if (state === 'playing' && player.onGround) jump();
+  }
+
+  /* ======================= СПАВН / АПДЕЙТ ======================= */
+  function spawnObstacle() {
+    const r = Math.random();
+    let w, h;
+    if (r < 0.52)      { w = 26; h = 34 + Math.random() * 14; }
+    else if (r < 0.82) { w = 26; h = 50 + Math.random() * 14; }
+    else               { w = 52; h = 34 + Math.random() * 8;  }
+    obstacles.push({ x: W + 40, y: GROUND_Y - h, w: w, h: h });
+  }
+
+  function update(dt) {
+    if (state === 'playing') {
+      speed = Math.min(340 + score * 1.1, 820);
+
+      const move = speed * dt;
+      distance += move;
+      score = Math.floor(distance / 24);
+
+      spawnIn -= move;
+      if (spawnIn <= 0) {
+        spawnObstacle();
+        spawnIn = 260 + speed * 0.5 + Math.random() * 220;
+      }
+
+      for (let i = 0; i < obstacles.length; i++) obstacles[i].x -= move;
+      obstacles = obstacles.filter(function (o) { return o.x + o.w > -30; });
+
+      const px = player.x + 9,  pw = player.w - 18;
+      const py = player.y + 8,  ph = player.h - 14;
+      for (let i = 0; i < obstacles.length; i++) {
+        const o = obstacles[i];
+        if (px < o.x + o.w && px + pw > o.x && py < o.y + o.h && py + ph > o.y) {
+          gameOver();
+          break;
+        }
+      }
+
+      updateScoreUI();
+    }
+
+    /* физика игрока */
+    player.vy += GRAVITY * dt;
+    player.y  += player.vy * dt;
+
+    const floor = GROUND_Y - player.h;
+    if (player.y >= floor) {
+      player.y  = floor;
+      player.vy = 0;
+      player.onGround = true;
+    } else {
+      player.onGround = false;
+    }
+
+    /* звёзды */
+    const drift = (state === 'playing' ? speed : 60);
+    for (let i = 0; i < stars.length; i++) {
+      const s = stars[i];
+      s.x -= drift * s.f * dt;
+      if (s.x < -4) {
+        s.x = W + 4;
+        s.y = Math.random() * (GROUND_Y - 40);
+      }
+    }
+
+    if (overLock > 0) overLock -= dt;
+  }
+
+  /* ======================= РЕНДЕР ======================= */
+  function drawPlayer(time) {
+    const p = player;
+    const bodyH = p.h - 12;
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+
+    // корпус
+    ctx.fillStyle = '#C4B0F0';
+    rr(0, 0, p.w, bodyH, 13);
+    ctx.fill();
+
+    // блик на корпусе — матовое стекло
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    rr(4, 4, p.w - 8, 10, 6);
+    ctx.fill();
+
+    // глаз
+    ctx.fillStyle = '#1A1723';
+    rr(p.w - 20, 12, 7, 7, 2.5);
+    ctx.fill();
+
+    // ноги
+    ctx.fillStyle = '#A891D8';
+    if (p.onGround) {
+      const step = Math.floor(time * 10) % 2;
+      rr(9,  bodyH - 2, 10, step ? 13 : 7, 3);  ctx.fill();
+      rr(26, bodyH - 2, 10, step ? 7  : 13, 3); ctx.fill();
+    } else {
+      rr(9,  bodyH - 2, 10, 9,  3); ctx.fill();
+      rr(26, bodyH - 4, 10, 11, 3); ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
+  function render(time) {
+    // фон канваса — матовый градиент
+    paintCanvasBg();
+
+    // звёзды
+    for (let i = 0; i < stars.length; i++) {
+      const s = stars[i];
+      ctx.globalAlpha = 0.14 + s.a;
+      ctx.fillStyle = '#9C88D0';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // земля
+    ctx.strokeStyle = '#332C44';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, GROUND_Y + 1);
+    ctx.lineTo(W, GROUND_Y + 1);
+    ctx.stroke();
+
+    // разметка на земле
+    const off = distance % 44;
+    ctx.fillStyle = '#241F31';
+    for (let x = -off; x < W; x += 44) ctx.fillRect(x, GROUND_Y + 10, 22, 3);
+
+    // препятствия
+    for (let i = 0; i < obstacles.length; i++) {
+      const o = obstacles[i];
+      ctx.fillStyle = '#5E4A9E';
+      rr(o.x, o.y, o.w, o.h, 9);
+      ctx.fill();
+
+      // верхняя кромка-блик
+      ctx.fillStyle = '#7A64BE';
+      rr(o.x + 5, o.y + 5, o.w - 10, 6, 3);
+      ctx.fill();
+    }
+
+    drawPlayer(time);
+  }
+
+  /* ======================= LOOP ======================= */
+  function loop(t) {
+    if (!lastT) lastT = t;
+    let dt = (t - lastT) / 1000;
+    lastT = t;
+    if (dt > 0.05) dt = 0.05;
+    if (dt < 0)    dt = 0;
+
+    update(dt);
+    render(t / 1000);
+
+    requestAnimationFrame(loop);
+  }
+
+  /* ======================= ВВОД ======================= */
+  window.addEventListener('keydown', function (e) {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Enter') {
+      e.preventDefault();
+      input();
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('pointerdown', function (e) { e.preventDefault(); input(); });
+  overlay.addEventListener('pointerdown', function (e) { e.preventDefault(); input(); });
+
+  /* ======================= СТАРТ ======================= */
+  showOverlay('ready');
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
